@@ -53,12 +53,33 @@ router.post('/', (req, res) => {
     });
 });
 
+router.post('/login', (req, res) => {
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user found with that email address. '});
+            return;
+        }
+        // res.json({ user: dbUserData });
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect Password.' });
+            return;
+        }
+        res.json({ user: dbUserData, message: 'You are now Logged in'});
+    })
+});
+
 // PURT /api/users/1
 router.put('/:id', (req, res) => {
     // expects {username: '', email: '', password: ''}
 
     // if req.body has exact key/value pairs to match model, can just use req.body
     User.update(req.body, {
+        individualHooks: true,
         where: {
             id: req.params.id
         }
