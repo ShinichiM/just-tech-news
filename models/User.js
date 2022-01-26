@@ -1,6 +1,8 @@
 // Model class is what we create our models from using extends keyword so User inherits all of the functionality the Model class has
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const bcrypt = require('bcrypt');
+
 
 // create User model
 class User extends Model {};
@@ -45,6 +47,18 @@ User.init(
         }
     },
     {
+        hooks: {
+            // set up beforeCreate lifecycle 'hook' functionality
+            async beforeCreate(newUserData) {
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            },
+
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+        },
         // THIS OBJECT ACCEPTS CONFIGURES CERTAIN OPTIONS FOR THE TABLE
         // TABLE CONFIGURATION OPTIONS GO HERE (https://sequelize.org/v5/manual/models-definition.html#configuration)
         // pass imported sequelize connection (direct connection to database)
