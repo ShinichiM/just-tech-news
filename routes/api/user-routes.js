@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User, Post, Vote } = require('../../models');
+const { User, Post, Vote, Comment } = require('../../models');
 
 // GET  /api/users
 // setup API endpoint so when a client makes GET request to /api/users, we select all users from the suer table in DB & send back as JSON
@@ -33,6 +33,14 @@ router.get('/:id', (req, res) => {
                     'post_url',
                     'created_at'
                 ]
+            }, 
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'created_at'],
+                include: {
+                    model: Post,
+                    attributes: ['title']
+                }
             },
             {
                 model: Post,
