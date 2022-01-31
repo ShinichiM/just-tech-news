@@ -22,7 +22,11 @@ router.post('/', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    Comment.destroy().then(dbCommentData => res.json(dbCommentData)).catch(err => {
+    Comment.destroy({
+        where: {
+            id: req.params.id
+        }
+    }).then(dbCommentData => res.json(dbCommentData)).catch(err => {
         console.log(err);
         res.status(400).json(err);
     })
