@@ -1,7 +1,8 @@
 const router = require('express').Router();
-
+const homeRoutes = require('./home-routes');
 const apiRoutes = require('./api');
 
+router.use('/', homeRoutes);
 router.use('/api', apiRoutes);
 
 // this second router.use() is so if we make a request to any endpoint that doesn't exist
